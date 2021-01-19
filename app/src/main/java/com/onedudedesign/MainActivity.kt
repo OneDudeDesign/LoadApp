@@ -10,9 +10,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -38,14 +35,12 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-//TODO: Make it download the correct selection
+
         custom_button.setOnClickListener {
-            setUriFromRadioSelection()
+            setUrlFromRadioSelection()
 
             if (radioSelected) {
                 download()
-                radioSelected = false
-                clearRadioGroupSelection()
             }
         }
 
@@ -60,35 +55,42 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun clearRadioGroupSelection (){
+    private fun clearRadioGroupSelection() {
         rg_main.clearCheck()
     }
 
-    private fun setUriFromRadioSelection() {
-        var id: Int = rg_main.checkedRadioButtonId
-        if (id != -1) {
-            // get the radio button if its checked
-            val rb: RadioButton = findViewById(id)
-            // set the radioSelected flag
-            radioSelected = true
-            Toast.makeText(
-                applicationContext,
-                "When the button was clicked, the radioButton was: ${rb.text}",
-                Toast.LENGTH_SHORT
-            ).show()
-        } else {
-            //nothing was selected
-            Toast.makeText(
-                applicationContext,
-                "Nothing was selected, please make a selection",
-                Toast.LENGTH_SHORT
-            ).show()
+    private fun setUrlFromRadioSelection() {
+
+        when (rg_main.checkedRadioButtonId) {
+            radioButtonGlide.id -> {
+                radioSelected = true
+                radioURL = URLGlide
+                Timber.i("Glide selected for Download")
+            }
+            radioButtonLoadApp.id -> {
+                radioSelected = true
+                radioURL = URLGitHub
+                Timber.i("LoadApp selected for download")
+            }
+            rbRetrofit.id -> {
+                radioSelected = true
+                radioURL = URLRetrofit
+                Timber.i("Retrofit selected for download")
+            }
+            else -> {
+                Timber.i("Nothing Selected in the radiogroup")
+                Toast.makeText(
+                    applicationContext,
+                    "Nothing was selected to download, please make a selection",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
     private fun download() {
         val request =
-            DownloadManager.Request(Uri.parse(URLGitHub))
+            DownloadManager.Request(Uri.parse(radioURL))
                 .setTitle(getString(R.string.app_name))
                 .setDescription(getString(R.string.app_description))
                 .setRequiresCharging(false)
@@ -101,16 +103,20 @@ class MainActivity : AppCompatActivity() {
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
-        rg_main.clearCheck()
+
+        //cleanup
+        radioSelected = false
+        radioURL = ""
+        clearRadioGroupSelection()
     }
 
     companion object {
         private const val URLGitHub =
             "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val URLGlide =
-            "https://github.com/bumptech/glide"
+            "https://github.com/bumptech/glide/archive/master.zip"
         private const val URLRetrofit =
-            "https://github.com/square/retrofit"
+            "https://github.com/square/retrofit/archive/master.zip"
         private const val CHANNEL_ID = "channelId"
     }
 

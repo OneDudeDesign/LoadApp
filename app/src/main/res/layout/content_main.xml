@@ -29,22 +29,22 @@
         app:layout_constraintTop_toBottomOf="@id/imageView" >
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/radioButtonGlide"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:text="@string/rb_glide" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/radioButtonLoadApp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:text="@string/rb_loadApp" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/rbRetrofit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:text="@string/rb_Retrofit" />
     </RadioGroup>
 
     <com.onedudedesign.LoadingButton
