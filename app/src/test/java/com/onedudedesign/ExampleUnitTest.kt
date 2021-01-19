@@ -1,4 +1,4 @@
-package com.udacity
+package com.onedudedesign
 
 import org.junit.Test
 
