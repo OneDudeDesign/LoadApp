@@ -8,4 +8,53 @@
     tools:context=".DetailActivity"
     tools:showIn="@layout/activity_detail">
 
+
+
+
+    <TextView
+        android:id="@+id/content_detail_lbl_filename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        android:text="@string/cd_lbl_filename"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/content_detail_filename"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/content_detail_lbl_filename"
+        app:layout_constraintTop_toTopOf="@+id/content_detail_lbl_filename"
+        tools:text="@string/rb_Retrofit" />
+
+    <TextView
+        android:id="@+id/content_detail_lbl_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/cd_lbl_status"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/content_detail_filename"
+        />
+    <TextView
+        android:id="@+id/content_detail_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/content_detail_filename"
+        app:layout_constraintTop_toBottomOf="@+id/content_detail_filename"
+        tools:text="@string/tool_text_fail" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

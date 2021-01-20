@@ -1,7 +1,6 @@
 package com.onedudedesign
 
 import android.app.DownloadManager
-import android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -9,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -27,10 +27,15 @@ class MainActivity : AppCompatActivity() {
     private var downloadID: Long = 0
     private var radioSelected: Boolean = false
     private var radioURL = ""
+    private var downloadedFile = ""
+    private var downloadStatus = ""
+
+    private val NOTIFICATION_ID = 0
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
+    private lateinit var downloadManager: DownloadManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +46,8 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         custom_button.setOnClickListener {
+
+
             setUrlFromRadioSelection()
 
             if (radioSelected) {
@@ -56,13 +63,42 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+
+            //query the status and set variable for the intent
+
+            if (id != null) {
+                val query = DownloadManager.Query().setFilterById(id)
+                val cursor = downloadManager.query(query)
+                if (cursor.moveToFirst()){
+                    val status: Int =
+                        cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                    cursor.close()
+
+                    if(status == DownloadManager.STATUS_SUCCESSFUL) {
+                        downloadStatus = "Succeeded"
+                    } else {
+                        downloadStatus = "Failed"
+                    }
+
+                    Timber.i("Status is: %S", downloadStatus)
+                }
+
+            }
+
             Timber.i("Received something")
             notificationManager = ContextCompat.getSystemService(
                 this@MainActivity,
                 NotificationManager::class.java
             ) as NotificationManager
 
-            notificationManager.sendNotification("Is this foo or bar ID: $id", CHANNEL_ID, this@MainActivity)
+            notificationManager.sendNotification(
+                "Downloaded file: $downloadedFile",
+                CHANNEL_ID,
+                this@MainActivity
+            )
+
+            //cleanup
+            downloadStatus = ""
 
         }
     }
@@ -88,16 +124,19 @@ class MainActivity : AppCompatActivity() {
             radioButtonGlide.id -> {
                 radioSelected = true
                 radioURL = URLGlide
+                downloadedFile = radioButtonGlide.text.toString()
                 Timber.i("Glide selected for Download")
             }
             radioButtonLoadApp.id -> {
                 radioSelected = true
                 radioURL = URLGitHub
+                downloadedFile = radioButtonLoadApp.text.toString()
                 Timber.i("LoadApp selected for download")
             }
             rbRetrofit.id -> {
                 radioSelected = true
                 radioURL = URLRetrofit
+                downloadedFile = rbRetrofit.text.toString()
                 Timber.i("Retrofit selected for download")
             }
             else -> {
@@ -120,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(true)
 
-        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
 
@@ -128,6 +167,42 @@ class MainActivity : AppCompatActivity() {
         radioSelected = false
         radioURL = ""
         clearRadioGroupSelection()
+    }
+
+    fun NotificationManager.sendNotification(
+        message: String,
+        channelId: String,
+        applicationContext: Context
+    ) {
+
+        val detailIntent = Intent(applicationContext, DetailActivity::class.java)
+        detailIntent.putExtra("DETAIL_FILE", downloadedFile)
+        detailIntent.putExtra("DETAIL_STATUS", downloadStatus)
+        detailIntent.putExtra("NOTIFICATION_ID", NOTIFICATION_ID)
+
+
+        pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            NOTIFICATION_ID,
+            detailIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val builder = NotificationCompat.Builder(
+            applicationContext, channelId
+        )
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(applicationContext.getString(R.string.download_channel_name))
+            .setContentText(message)
+            //.setContentIntent(pendingIntent)
+            //.setAutoCancel(true)
+            .addAction(
+                R.drawable.ic_launcher_foreground,
+                "CheckStatus",
+                pendingIntent
+            )
+
+        notify(NOTIFICATION_ID, builder.build())
     }
 
     private fun createChannel(channelId: String, channelName: String) {
