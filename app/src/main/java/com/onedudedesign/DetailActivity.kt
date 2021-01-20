@@ -4,9 +4,12 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.motion.widget.MotionScene
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.content_detail.*
+import timber.log.Timber
 
 class DetailActivity : AppCompatActivity() {
 
@@ -34,5 +37,13 @@ class DetailActivity : AppCompatActivity() {
             notificationManager.cancel(nId)
         }
 
+        val motionLayout : MotionLayout = content_detail_layout
+        val time = motionLayout.transitionTimeMs
+        Timber.i("Transition time: %s", time)
+
+        motionLayout.transitionToEnd()
+
+
     }
+
 }
