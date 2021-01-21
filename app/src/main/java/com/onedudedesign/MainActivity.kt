@@ -20,6 +20,8 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var radioURL = ""
     private var downloadedFile = ""
     private var downloadStatus = ""
+    private var downloadSize = ""
 
     private val NOTIFICATION_ID = 0
 
@@ -162,7 +165,12 @@ class MainActivity : AppCompatActivity() {
         downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+        Timber.i("Download ID: %s", downloadID)
 
+
+
+        //set to checkstatus
+        downloadStatusTimer(downloadID)
         //cleanup
         radioSelected = false
         radioURL = ""
@@ -223,6 +231,54 @@ class MainActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(notificationChannel)
 
         }
+    }
+
+    private fun downloadStatusTimer (id: Long) {
+        val timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+
+                var status: Int = 0
+                var size: String
+                var downloadSoFar: String
+
+                if (id != null) {
+                    val query = DownloadManager.Query().setFilterById(id)
+                    val cursor = downloadManager.query(query)
+                    if (cursor.moveToFirst()) {
+                        status =
+                            cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                        // no matter where I run this it returns -1 until the download is successful then
+                        //returns the correct size, useless for animating.....
+                        size =
+                            cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                        downloadSoFar =
+                            cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                        Timber.i("Size: %s, Download so far: %s", size, downloadSoFar)
+                        cursor.close()
+                    }
+                }
+                //report on status
+                when (status) {
+                    0 -> Timber.i("Check Cursor??")
+                    DownloadManager.STATUS_PENDING -> Timber.i("Pending")
+                    DownloadManager.STATUS_RUNNING -> Timber.i("Running")
+                    DownloadManager.STATUS_SUCCESSFUL -> {
+                        Timber.i("Succesful")
+                        timer.cancel()
+                    }
+                    DownloadManager.STATUS_PAUSED -> Timber.i("Paused")
+                    DownloadManager.STATUS_FAILED ->{
+                        Timber.i("Failed")
+                        timer.cancel()
+                    }
+                    else -> Timber.i("Something Else: %s", status)
+
+                }
+
+            }
+
+        }, 1, 1000)
     }
 
 }
