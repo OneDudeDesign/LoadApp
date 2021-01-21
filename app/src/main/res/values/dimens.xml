@@ -2,4 +2,8 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="default_text_size">20sp</dimen>
+    <dimen name="detail_content_bigTopMargin">40dp</dimen>
+    <dimen name="detail_content_std_padding">16dp</dimen>
+    <dimen name="detail_content_main_textSize">24sp</dimen>
+    <dimen name="std_button_margin">16dp</dimen>
 </resources>

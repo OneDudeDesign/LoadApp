@@ -10,7 +10,7 @@
 
     <string name="button_name">Click me</string>
     <string name="button_loading">We are loading </string>
-    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_detail">Download Status</string>
     <string name="rb_glide">Glide-Image Loading Library by BumpTech</string>
     <string name="rb_loadApp">LoadApp - Current repository by Udacity</string>
     <string name="rb_Retrofit">Retrofit - Type-safe HTTP client for Android and Java by Square, Inc.</string>
@@ -18,4 +18,5 @@
     <string name="cd_lbl_filename">File Name:</string>
     <string name="cd_lbl_status">Status:</string>
     <string name="tool_text_fail">Fail</string>
+    <string name="btn_ok_text">OK</string>
 </resources>
