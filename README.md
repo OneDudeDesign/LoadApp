@@ -14,3 +14,5 @@ https://code.luasoftware.com/tutorials/android/android-download-file-with-downlo
 and converting it to kotlin looking a developer.android.com
 
 checking for network mode adapted from https://www.tutorialspoint.com/how-to-check-internet-connection-availability-and-the-network-type-on-android-using-kotlin
+
+text centering https://blog.danlew.net/2013/10/03/centering_single_line_text_in_a_canvas/

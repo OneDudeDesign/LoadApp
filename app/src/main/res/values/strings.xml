@@ -8,7 +8,7 @@
     <string name="notification_description">The Project 3 repository is downloaded</string>
     <string name="notification_button">See changes</string>
 
-    <string name="button_name">Download</string>
+    <string name="button_name">DOWNLOAD</string>
     <string name="button_loading">We are loading </string>
     <string name="title_activity_detail">Download Status</string>
     <string name="rb_glide">Glide-Image Loading Library by BumpTech</string>

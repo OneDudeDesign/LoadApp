@@ -3,5 +3,6 @@
     <declare-styleable name="LoadingButton">
         <attr name="colorBtnText" format="color" />
         <attr name="colorBtnStart" format="color" />
+        <attr name="colorBtnProgress" format="color"/>
     </declare-styleable>
 </resources>

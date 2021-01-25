@@ -8,12 +8,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.database.Cursor
 import android.graphics.Color
 import android.net.*
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -22,7 +20,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
 import java.util.*
-import kotlin.concurrent.schedule
 
 
 class MainActivity : AppCompatActivity() {
@@ -49,15 +46,17 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
+
         custom_button.setOnClickListener {
 
 
             setUrlFromRadioSelection()
-            //check for network then readio selection then download
+            //check for network then radio selection then download
 
             if (checkNetwork()) {
                 Timber.i("Network is on")
                 if (radioSelected) {
+                    custom_button.buttonState = ButtonState.Clicked
                     download()
                 }
             } else {
@@ -72,6 +71,9 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+
+            //stop the progress animation
+            custom_button.buttonState=ButtonState.Completed
 
             //query the status and set variable for the intent
 
@@ -287,9 +289,6 @@ class MainActivity : AppCompatActivity() {
         }, 1, 1000)
     }
 
-    private fun CheckAirplaneMode (context: Context) : Boolean {
-        return Settings.System.getInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0 ) !=0
-    }
 
     private fun checkNetwork(): Boolean {
         val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
