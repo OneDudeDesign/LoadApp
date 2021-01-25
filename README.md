@@ -12,3 +12,5 @@ https://stackoverflow.com/questions/26210048/how-to-receive-status-of-download-m
 figured outy use of timer by reading 
 https://code.luasoftware.com/tutorials/android/android-download-file-with-downloadmanager-and-check-status/
 and converting it to kotlin looking a developer.android.com
+
+checking for network mode adapted from https://www.tutorialspoint.com/how-to-check-internet-connection-availability-and-the-network-type-on-android-using-kotlin

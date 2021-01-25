@@ -10,9 +10,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.database.Cursor
 import android.graphics.Color
-import android.net.Uri
+import android.net.*
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -52,15 +53,20 @@ class MainActivity : AppCompatActivity() {
 
 
             setUrlFromRadioSelection()
+            //check for network then readio selection then download
 
-            if (radioSelected) {
-                download()
+            if (checkNetwork()) {
+                Timber.i("Network is on")
+                if (radioSelected) {
+                    download()
+                }
+            } else {
+                Timber.i("Network is off")
+                Toast.makeText(this,"Your Network may be disabled or in Airplane Mode, please check and try again",Toast.LENGTH_SHORT).show()
             }
         }
 
         createChannel(CHANNEL_ID, getString(R.string.download_channel_name))
-
-
     }
 
     private val receiver = object : BroadcastReceiver() {
@@ -279,6 +285,17 @@ class MainActivity : AppCompatActivity() {
             }
 
         }, 1, 1000)
+    }
+
+    private fun CheckAirplaneMode (context: Context) : Boolean {
+        return Settings.System.getInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0 ) !=0
+    }
+
+    private fun checkNetwork(): Boolean {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val nw = cm.activeNetwork
+
+        return nw != null
     }
 
 }
