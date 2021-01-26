@@ -61,7 +61,11 @@ class MainActivity : AppCompatActivity() {
                 }
             } else {
                 Timber.i("Network is off")
-                Toast.makeText(this,"Your Network may be disabled or in Airplane Mode, please check and try again",Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Your Network may be disabled or in Airplane Mode, please check and try again",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -74,18 +78,19 @@ class MainActivity : AppCompatActivity() {
 
             //stop the progress animation
             custom_button.buttonState=ButtonState.Completed
+            LoadingButton(applicationContext).stopProgressAnimation()
 
             //query the status and set variable for the intent
 
             if (id != null) {
                 val query = DownloadManager.Query().setFilterById(id)
                 val cursor = downloadManager.query(query)
-                if (cursor.moveToFirst()){
+                if (cursor.moveToFirst()) {
                     val status: Int =
                         cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                     cursor.close()
 
-                    if(status == DownloadManager.STATUS_SUCCESSFUL) {
+                    if (status == DownloadManager.STATUS_SUCCESSFUL) {
                         downloadStatus = "Succeeded"
                     } else {
                         downloadStatus = "Failed"
@@ -176,7 +181,6 @@ class MainActivity : AppCompatActivity() {
         Timber.i("Download ID: %s", downloadID)
 
 
-
         //set to checkstatus
         downloadStatusTimer(downloadID)
         //cleanup
@@ -241,30 +245,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun downloadStatusTimer (id: Long) {
+    //NOTE I have left the timer code here as it works and could be used to set progress; however,
+    //the total download size gets reported as -1 until the download completes so it makes it
+    //impossible to make a calculation on percentage of progress. Will need some work but is not
+    //necessary for the rubric
+
+    private fun downloadStatusTimer(id: Long) {
         val timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
 
-                var status: Int = 0
-                var size: String
-                var downloadSoFar: String
+                var status = 0
+                val size: String
+                val downloadSoFar: String
 
-                if (id != null) {
-                    val query = DownloadManager.Query().setFilterById(id)
-                    val cursor = downloadManager.query(query)
-                    if (cursor.moveToFirst()) {
-                        status =
-                            cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-                        // no matter where I run this it returns -1 until the download is successful then
-                        //returns the correct size, useless for animating.....
-                        size =
-                            cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-                        downloadSoFar =
-                            cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-                        Timber.i("Size: %s, Download so far: %s", size, downloadSoFar)
-                        cursor.close()
-                    }
+                val query = DownloadManager.Query().setFilterById(id)
+                val cursor = downloadManager.query(query)
+                if (cursor.moveToFirst()) {
+                    status =
+                        cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                    // no matter where I run this it returns -1 until the download is successful then
+                    //returns the correct size, useless for animating.....
+                    size =
+                        cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                    downloadSoFar =
+                        cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                    Timber.i("Size: %s, Download so far: %s", size, downloadSoFar)
+                    cursor.close()
                 }
                 //report on status
                 when (status) {
@@ -276,7 +283,7 @@ class MainActivity : AppCompatActivity() {
                         timer.cancel()
                     }
                     DownloadManager.STATUS_PAUSED -> Timber.i("Paused")
-                    DownloadManager.STATUS_FAILED ->{
+                    DownloadManager.STATUS_FAILED -> {
                         Timber.i("Failed")
                         timer.cancel()
                     }
@@ -286,7 +293,7 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-        }, 1, 1000)
+        }, 1, 500)
     }
 
 

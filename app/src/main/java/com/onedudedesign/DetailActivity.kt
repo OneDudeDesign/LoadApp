@@ -46,6 +46,7 @@ class DetailActivity : AppCompatActivity() {
             notificationManager.cancel(nId)
         }
         ok_button.setOnClickListener {
+            LoadingButton(applicationContext).stopProgressAnimation()
             finish()
         }
 

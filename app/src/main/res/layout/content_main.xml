@@ -55,6 +55,7 @@
         app:colorBtnText="@color/white"
         app:colorBtnStart="@color/colorPrimary"
         app:colorBtnProgress="@color/colorAccent"
+        app:colorBtnLoadText="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

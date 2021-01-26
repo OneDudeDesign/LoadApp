@@ -4,5 +4,6 @@
         <attr name="colorBtnText" format="color" />
         <attr name="colorBtnStart" format="color" />
         <attr name="colorBtnProgress" format="color"/>
+        <attr name="colorBtnLoadText" format="color"/>
     </declare-styleable>
 </resources>
