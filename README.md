@@ -1,6 +1,9 @@
 # LoadApp
 Android-Kotlin Nanodegree project 3
 
+Regarding permissions, I hardcoded the Network and Internet permissions because without them well there is no app, I suspect a user installing this 
+app to download files would understand it needs network to do so, if I give them the ability to deny permissions the app is useless.
+
 Attributions:
 Documentation reviewed from:
 https://developer.android.com/reference/android/app/DownloadManager.Request?authuser=1#setDestinationUri(android.net.Uri)
