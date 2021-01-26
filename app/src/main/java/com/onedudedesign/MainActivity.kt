@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
             ) as NotificationManager
 
             notificationManager.sendNotification(
-                "Downloaded file: $downloadedFile",
+                "$downloadStatus downloading file: $downloadedFile",
                 CHANNEL_ID,
                 this@MainActivity
             )
@@ -224,6 +224,8 @@ class MainActivity : AppCompatActivity() {
             .setLargeIcon(BitmapFactory.decodeResource(resources,R.mipmap.ic_loadapp_foreground))
             .setContentTitle(applicationContext.getString(R.string.download_channel_name))
             .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setChannelId(channelId)
 
             .addAction(
                 R.drawable.ic_launcher_foreground,
