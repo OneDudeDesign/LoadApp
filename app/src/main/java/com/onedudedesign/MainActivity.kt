@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
                 Timber.i("Network is on")
                 if (radioSelected) {
                     custom_button.buttonState = ButtonState.Clicked
+                    disableRadioGroup()
                     download()
                 }
             } else {
@@ -64,8 +65,8 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(
                     this,
                     "Your Network may be disabled or in Airplane Mode, please check and try again",
-                    Toast.LENGTH_SHORT
-                ).show()
+                    Toast.LENGTH_SHORT).show()
+
             }
         }
 
@@ -75,6 +76,8 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            //reset the radiogroup
+            enableRadioGroup()
 
             //stop the progress animation
             custom_button.buttonState=ButtonState.Completed
@@ -302,6 +305,17 @@ class MainActivity : AppCompatActivity() {
         val nw = cm.activeNetwork
 
         return nw != null
+    }
+
+    private fun disableRadioGroup(){
+        for (i in 0..rg_main.childCount-1) {
+            rg_main.getChildAt(i).isEnabled = false
+        }
+    }
+    private fun enableRadioGroup(){
+        for (i in 0..rg_main.childCount-1) {
+            rg_main.getChildAt(i).isEnabled = true
+        }
     }
 
 }

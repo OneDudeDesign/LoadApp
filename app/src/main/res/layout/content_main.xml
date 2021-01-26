@@ -17,7 +17,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        android:src="@drawable/clouddownload"
+        tools:srcCompat="@drawable/clouddownload" />
 
     <RadioGroup
         android:id="@+id/rg_main"
@@ -26,25 +27,28 @@
         app:layout_constraintBottom_toTopOf="@+id/custom_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView" >
+        app:layout_constraintTop_toBottomOf="@id/imageView">
 
         <RadioButton
             android:id="@+id/radioButtonGlide"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/rb_glide" />
+            android:text="@string/rb_glide"
+            android:textSize="@dimen/detail_content_main_textSize" />
 
         <RadioButton
             android:id="@+id/radioButtonLoadApp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/rb_loadApp" />
+            android:text="@string/rb_loadApp"
+            android:textSize="@dimen/detail_content_main_textSize" />
 
         <RadioButton
             android:id="@+id/rbRetrofit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/rb_Retrofit" />
+            android:text="@string/rb_Retrofit"
+            android:textSize="@dimen/detail_content_main_textSize" />
     </RadioGroup>
 
     <com.onedudedesign.LoadingButton
@@ -52,14 +56,13 @@
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_margin="20dp"
-        app:colorBtnText="@color/white"
-        app:colorBtnStart="@color/colorPrimary"
+        app:colorBtnLoadText="@color/secondaryTextColor"
         app:colorBtnProgress="@color/colorAccent"
-        app:colorBtnLoadText="@color/colorPrimaryDark"
+        app:colorBtnStart="@color/colorPrimary"
+        app:colorBtnText="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rg_main"
-     />
+        app:layout_constraintTop_toBottomOf="@id/rg_main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
