@@ -1,13 +1,6 @@
 <resources>
     <string name="app_name">Downloader</string>
     <string name="app_description">Download files from Internet</string>
-    <string name="action_settings">Settings</string>
-
-
-    <string name="notification_title">Udacity: Android Kotlin Nanodegree </string>
-    <string name="notification_description">The Project 3 repository is downloaded</string>
-    <string name="notification_button">See changes</string>
-
     <string name="button_name">DOWNLOAD</string>
     <string name="button_loading">We are loading </string>
     <string name="title_activity_detail">Download Status</string>
@@ -19,4 +12,6 @@
     <string name="cd_lbl_status">Status:</string>
     <string name="tool_text_fail">Fail</string>
     <string name="btn_ok_text">OK</string>
+    <string name="main_iv_content_description">Image of a cloud with a download arrow.</string>
+    <string name="loading_button_content_descr">Click this button to download after selecting an item</string>
 </resources>

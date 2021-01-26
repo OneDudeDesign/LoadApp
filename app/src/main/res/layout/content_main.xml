@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_main"
+    app:layoutDescription="@xml/content_main_scene">
 
     <ImageView
         android:id="@+id/imageView"
@@ -18,7 +19,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/clouddownload"
-        tools:srcCompat="@drawable/clouddownload" />
+        tools:srcCompat="@drawable/clouddownload"
+        android:contentDescription="@string/main_iv_content_description" />
 
     <RadioGroup
         android:id="@+id/rg_main"
@@ -60,9 +62,10 @@
         app:colorBtnProgress="@color/colorAccent"
         app:colorBtnStart="@color/colorPrimary"
         app:colorBtnText="@color/white"
+        android:contentDescription="@string/loading_button_content_descr"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rg_main" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.motion.widget.MotionLayout>

@@ -18,3 +18,6 @@ checking for network mode adapted from https://www.tutorialspoint.com/how-to-che
 value animation adapted from http://raphaelfavero.github.io/Creating_Animated_Custom_View/
 
 text centering https://blog.danlew.net/2013/10/03/centering_single_line_text_in_a_canvas/
+
+Graphics:
+all graphics and icons not provided by android studio were created by me in Adobe AI

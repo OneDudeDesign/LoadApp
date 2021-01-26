@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.*
 import android.os.Build
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
+import java.lang.Exception
 import java.util.*
 
 
@@ -29,13 +31,11 @@ class MainActivity : AppCompatActivity() {
     private var radioURL = ""
     private var downloadedFile = ""
     private var downloadStatus = ""
-    private var downloadSize = ""
 
     private val NOTIFICATION_ID = 0
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
-    private lateinit var action: NotificationCompat.Action
     private lateinit var downloadManager: DownloadManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,22 +43,28 @@ class MainActivity : AppCompatActivity() {
         Timber.plant(Timber.DebugTree())
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+            toolbar.logo = ContextCompat.getDrawable(applicationContext,R.mipmap.ic_loadapp_round)
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
 
         custom_button.setOnClickListener {
 
-
+            //when clicked set the download url or ask for a selection
             setUrlFromRadioSelection()
-            //check for network then radio selection then download
 
+            //check for network then radio selection then download
             if (checkNetwork()) {
                 Timber.i("Network is on")
                 if (radioSelected) {
                     custom_button.buttonState = ButtonState.Clicked
                     disableRadioGroup()
-                    download()
+                    try {
+                        download()
+                    } catch (e: Exception) {
+                        Timber.i(e)
+                    }
+
                 }
             } else {
                 Timber.i("Network is off")
@@ -66,10 +72,9 @@ class MainActivity : AppCompatActivity() {
                     this,
                     "Your Network may be disabled or in Airplane Mode, please check and try again",
                     Toast.LENGTH_SHORT).show()
-
             }
         }
-
+        //create notification channel
         createChannel(CHANNEL_ID, getString(R.string.download_channel_name))
     }
 
@@ -79,11 +84,11 @@ class MainActivity : AppCompatActivity() {
             //reset the radiogroup
             enableRadioGroup()
 
-            //stop the progress animation
+            //stop the progress animation and set the button state
             custom_button.buttonState=ButtonState.Completed
             LoadingButton(applicationContext).stopProgressAnimation()
 
-            //query the status and set variable for the intent
+            //query the status from the DownloadManagher and set variable for the intent
 
             if (id != null) {
                 val query = DownloadManager.Query().setFilterById(id)
@@ -134,11 +139,12 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun clearRadioGroupSelection() {
+        //clearing the radiogroup selection after download clicked
         rg_main.clearCheck()
     }
 
     private fun setUrlFromRadioSelection() {
-
+        //check the radio selections and setup
         when (rg_main.checkedRadioButtonId) {
             radioButtonGlide.id -> {
                 radioSelected = true
@@ -197,7 +203,7 @@ class MainActivity : AppCompatActivity() {
         channelId: String,
         applicationContext: Context
     ) {
-
+        //set the intent
         val detailIntent = Intent(applicationContext, DetailActivity::class.java)
         detailIntent.putExtra("DETAIL_FILE", downloadedFile)
         detailIntent.putExtra("DETAIL_STATUS", downloadStatus)
@@ -210,15 +216,15 @@ class MainActivity : AppCompatActivity() {
             detailIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
-
+        //Build the notification
         val builder = NotificationCompat.Builder(
             applicationContext, channelId
         )
             .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setLargeIcon(BitmapFactory.decodeResource(resources,R.mipmap.ic_loadapp_foreground))
             .setContentTitle(applicationContext.getString(R.string.download_channel_name))
             .setContentText(message)
-            //.setContentIntent(pendingIntent)
-            //.setAutoCancel(true)
+
             .addAction(
                 R.drawable.ic_launcher_foreground,
                 "CheckStatus",
@@ -227,7 +233,7 @@ class MainActivity : AppCompatActivity() {
 
         notify(NOTIFICATION_ID, builder.build())
     }
-
+    //notification channel creation
     private fun createChannel(channelId: String, channelName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
@@ -239,6 +245,7 @@ class MainActivity : AppCompatActivity() {
             notificationChannel.lightColor = Color.RED
             notificationChannel.enableVibration(true)
             notificationChannel.description = "Download Completed"
+
 
             val notificationManager = getSystemService(
                 NotificationManager::class.java
@@ -306,16 +313,16 @@ class MainActivity : AppCompatActivity() {
 
         return nw != null
     }
-
+    //disable the radio group while downloading
     private fun disableRadioGroup(){
         for (i in 0..rg_main.childCount-1) {
             rg_main.getChildAt(i).isEnabled = false
         }
     }
+    //enable the radio group
     private fun enableRadioGroup(){
         for (i in 0..rg_main.childCount-1) {
             rg_main.getChildAt(i).isEnabled = true
         }
     }
-
 }

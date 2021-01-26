@@ -19,8 +19,10 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
         setSupportActionBar(toolbar)
+            toolbar.logo = ContextCompat.getDrawable(applicationContext,R.mipmap.ic_loadapp_round)
 
 
+        //set the intent and receive extras
         val intent: Intent = intent
         if (intent.hasExtra("DETAIL_FILE")) {
             content_detail_filename.text = intent.getStringExtra("DETAIL_FILE")}
@@ -35,28 +37,23 @@ class DetailActivity : AppCompatActivity() {
         }
 
 
-        //cancel the notification
+        //get the Notification manager
         val notificationManager = ContextCompat.getSystemService(
             applicationContext,
             NotificationManager::class.java
         ) as NotificationManager
 
+        // and cancel the notification using the id
         if (intent.hasExtra("NOTIFICATION_ID")) {
             val nId: Int = intent.getIntExtra("NOTIFICATION_ID",-1)
             notificationManager.cancel(nId)
         }
+
+        //set the OK button listener to stop the animation(just in case) and go back to the main
         ok_button.setOnClickListener {
             LoadingButton(applicationContext).stopProgressAnimation()
             finish()
         }
-
-//        val motionLayout : MotionLayout = content_detail_layout
-//        val time = motionLayout.transitionTimeMs
-//        Timber.i("Transition time: %s", time)
-//
-//        motionLayout.transitionToEnd()
-
-
     }
 
 }

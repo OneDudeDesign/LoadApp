@@ -18,6 +18,7 @@ class LoadingButton @JvmOverloads constructor(
     private var widthSize = 0
     private var heightSize = 0
 
+    //set animators and values
     private val progressAnimator = ValueAnimator()
     private val progressCircAnimator = ValueAnimator()
     private var progress: Float = 0f
@@ -63,8 +64,10 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     override fun performClick(): Boolean {
-
+        //do the calculations for the circle and arc here
+        // so we do not calculate in on draw repeatedly
         calculateProgressCircleValues()
+        //start the animations
         startAnimation()
         startCircAnimation()
         Timber.i("Button State: %s", buttonState.toString())
@@ -75,9 +78,11 @@ class LoadingButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
+        //draw the initial button or the loading button depending on buttonState
         when (buttonState) {
             ButtonState.Completed -> drawButton(canvas)
             ButtonState.Clicked -> drawLoadingButton(canvas)
+            else -> drawButton(canvas)
         }
 
     }
@@ -96,7 +101,7 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private fun drawButton(canvas: Canvas?) {
-
+        //draw the background
         canvas?.drawRect(
             0.0f,
             0.0f,
@@ -110,6 +115,7 @@ class LoadingButton @JvmOverloads constructor(
         //get offset value to center the text
         val textHeight: Float = paintText.descent() - paintText.ascent()
         val textOffset: Float = textHeight / 2 - paintText.descent()
+
         //Draw the text
         canvas?.drawText(
             context.getString(R.string.button_name),
@@ -150,31 +156,16 @@ class LoadingButton @JvmOverloads constructor(
             width / 2.0f, height / 2.0f + textOffset,
             paintText
         )
-        //measure the text here to place the text in a visually appealing location midway between
-        // the end of the text and the end of the custom button
-//        val paintedTextsize = paintText.measureText(R.string.button_loading.toString())
-//        Timber.i(
-//            "STRING IS OF LENGTH %s  OVERALL WIDTH IS %s HEIGHT IS %S",
-//            paintedTextsize,
-//            width,
-//            height
-       // )
 
-        //set the points of the circle to draw via drawArc
-//        val x = (width.toFloat() - ((width.toFloat() - paintedTextsize) / 4))
-//        val y = height.toFloat() / 2.0f
-//        val r = (height.toFloat() / 3.0f)
-
-        //values for the arc:
-
-
-        //Timber.i("X = %s, Y = %s, R = %s", x,y,r)
+        //draw background circle
         canvas?.drawCircle(xC, yC, rC, customBtnProgressPaint())
+        //draw the arc using the animation value
         canvas?.drawArc(arcL,arcT, arcR,arcB, 270f, circProgress, true,customBtnStartPaint())
 
     }
 
     private fun calculateProgressCircleValues() {
+        //calculating values for circle and arc outside the onDraw() method
         paintedTextsize =
             customButtonTextLoadPaint().measureText(R.string.button_loading.toString())
         xC = (width.toFloat() - ((width.toFloat() - paintedTextsize) / 4))
@@ -190,6 +181,7 @@ class LoadingButton @JvmOverloads constructor(
         Timber.i("ArcLeft = %s, ArcRight = %s ArcTop = %s ArcBottom = %s", arcL,arcR,arcT,arcB)
     }
 
+    //animation starter for the button
     private fun startAnimation() {
 
         progressAnimator.duration = 2500
@@ -204,6 +196,7 @@ class LoadingButton @JvmOverloads constructor(
 
     }
 
+    //animation starter for the arc circle
     private fun startCircAnimation() {
         progressCircAnimator.duration = 2500
         progressCircAnimator.repeatCount = ValueAnimator.INFINITE
@@ -215,6 +208,7 @@ class LoadingButton @JvmOverloads constructor(
         progressCircAnimator.start()
     }
 
+    //called to stop the animations
     fun stopProgressAnimation() {
         Timber.i("StopProgressAnimation Called")
         progressAnimator.cancel()
@@ -223,43 +217,37 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private fun customBtnStartPaint(): Paint {
-        val paintButtonStart = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        return Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.FILL
             color = colorBtnStart
         }
-        return paintButtonStart
     }
 
     private fun customBtnProgressPaint(): Paint {
-        val paintButtonProgress = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        return Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.FILL
             color = colorBtnProgress
         }
-        return paintButtonProgress
     }
 
     private fun customButtonTextIdlePaint(): Paint {
-        //paint for the text
-        val paintText = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        return Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.FILL
             color = colorTextPaint
             textAlign = Paint.Align.CENTER
             textSize = 60.0f
             typeface = Typeface.create("", Typeface.BOLD)
         }
-        return paintText
     }
 
     private fun customButtonTextLoadPaint(): Paint {
-        //paint for the text
-        val paintText = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        return Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.FILL
             color = colorLoadTextPaint
             textAlign = Paint.Align.CENTER
             textSize = 60.0f
             typeface = Typeface.create("", Typeface.BOLD)
         }
-        return paintText
     }
 
 
